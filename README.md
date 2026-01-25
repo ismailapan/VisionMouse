@@ -39,6 +39,5 @@ git clone [https://github.com/ismailapan/VisionMouse.git](https://github.com/ism
 cd VisionMouse
 ```
 ### 2.  Gerekli kütüphaneleri yükleyin:
-    ```bash
     pip install -r requirements.txt
-    ```
+    
