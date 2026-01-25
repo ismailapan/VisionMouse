@@ -37,3 +37,8 @@ Projeyi bilgisayarınızda çalıştırmak için aşağıdaki adımları izleyin
 ```bash
 git clone [https://github.com/ismailapan/VisionMouse.git](https://github.com/ismailapan/VisionMouse.git)
 cd VisionMouse
+```
+### 2.  Gerekli kütüphaneleri yükleyin:
+    ```bash
+    pip install -r requirements.txt
+    ```
