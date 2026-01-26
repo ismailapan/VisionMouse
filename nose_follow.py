@@ -73,10 +73,16 @@ while cap.isOpened():
             distance = ((target_x - prev_x)**2 + (target_y - prev_y)**2)**0.5
             if distance > 100:
                 current_smooth = 2
-            elif distance > 15:
-                current_smooth = 6
+            elif distance > 20:
+                current_smooth = 5
+            elif distance > 10:
+                current_smooth = 10
+            elif distance > 5:
+                current_smooth = 15
+            elif distance > 3:
+                current_smooth = 20
             else:
-                current_smooth = 30
+                current_smooth = 40
 
             #Yumuşatma işlemi
             curr_x = prev_x + (target_x - prev_x) / current_smooth
@@ -90,25 +96,25 @@ while cap.isOpened():
             prev_x, prev_y = curr_x, curr_y
 
             #Sol göz işlemleri
-            if ratio_left < 0.20 and ratio_right > 0.20:
+            if ratio_left < 0.19 and ratio_right > 0.20:
                 left_click +=1
 
                 if left_click == 3 and trig_left is False:
                     pyautogui.leftClick()
                     trig_left = True
-            elif ratio_left > 0.25:
+            elif ratio_left > 0.20:
                 left_click = 0
                 trig_left = False
 
             #Sağ göz işlemleri
-            if ratio_right < 0.20 and ratio_left > 0.20:
+            if ratio_right < 0.18 and ratio_left > 0.20:
                 right_click +=1
 
                 if right_click == 3 and trig_right is False:
                     pyautogui.rightClick()
                     trig_right = True
             
-            elif ratio_right > 0.25:
+            elif ratio_right > 0.22:
                 right_click = 0
                 trig_right = False
 
@@ -124,6 +130,7 @@ while cap.isOpened():
                 left_right_click = 0
                 trig_double = False
         
+        #print(f"Sol Göz: {ratio_left:.2f} -- Sağ Göz: {ratio_right:.2f}")
         cv2.circle(image, (nose_x, nose_y), 5, (0,255,0), -1)
 
     cv2.imshow("MediaPipe Test", image)
