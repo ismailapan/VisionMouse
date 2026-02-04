@@ -2,6 +2,7 @@ import mediapipe as mp
 import numpy as np
 import pyautogui
 import cv2
+import time
 from eye_ratio_func import eye_ratio, LEFT_EYE, RIGHT_EYE
 from mouth_ratio_func import mouth_ratio
 
@@ -14,7 +15,9 @@ left_right_click = 0
 trig_left = False
 trig_right = False
 trig_double = False
-#cons_smooth = 20
+timer_start = 0
+timer_limit = 10.0
+eyes_closed = False
 
 prev_x, prev_y = 0, 0
 curr_x, curr_y = 0, 0
@@ -43,7 +46,7 @@ while cap.isOpened():
     results = face_mesh.process(image)
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-    cv2.rectangle(image, (280,200), (370,290), (255,0,0), 2)
+    cv2.rectangle(image, (295,215), (345,265), (255,0,0), 2)
 
     if results.multi_face_landmarks:
         landmarks = results.multi_face_landmarks[0].landmark
@@ -66,34 +69,41 @@ while cap.isOpened():
             nose_y = int(nose.y * cam_h)
 
             #MAPPING
-            target_x = np.interp(nose_x, (280,360), (0,screen_w))
-            target_y = np.interp(nose_y, (200,280), (0,screen_h))
+            target_x = np.interp(nose_x, (295,345), (0,screen_w))
+            target_y = np.interp(nose_y, (215,265), (0,screen_h))
 
             #MESAFE ÖLÇME
             distance = ((target_x - prev_x)**2 + (target_y - prev_y)**2)**0.5
             if distance > 100:
-                current_smooth = 2
+                current_smooth = 3
             elif distance > 20:
                 current_smooth = 5
-            elif distance > 10:
+            elif distance > 15:
                 current_smooth = 10
             elif distance > 5:
                 current_smooth = 15
             elif distance > 3:
-                current_smooth = 20
+                current_smooth = 35
+            elif distance > 2:
+                current_smooth = 50
+            elif distance > 1:
+                current_smooth = 65
             else:
-                current_smooth = 40
+                current_smooth = 75
 
             #Yumuşatma işlemi
-            curr_x = prev_x + (target_x - prev_x) / current_smooth
-            curr_y = prev_y + (target_y - prev_y) / current_smooth
+            is_Clicking = ratio_left < 0.19 or ratio_right <0.18
 
-            try:
-                pyautogui.moveTo(curr_x, curr_y)
-            except:
-                pass
+            if not is_Clicking:
+                curr_x = prev_x + (target_x - prev_x) / current_smooth
+                curr_y = prev_y + (target_y - prev_y) / current_smooth
 
-            prev_x, prev_y = curr_x, curr_y
+                try:
+                    pyautogui.moveTo(curr_x, curr_y)
+                except:
+                    pass
+
+                prev_x, prev_y = curr_x, curr_y
 
             #Sol göz işlemleri
             if ratio_left < 0.19 and ratio_right > 0.20:
@@ -118,21 +128,32 @@ while cap.isOpened():
                 right_click = 0
                 trig_right = False
 
-            #Sağ-Sol göz işlemleri
-            if ratio_left < 0.18 and ratio_right < 0.18:
-                left_right_click += 1
 
-                if left_right_click == 3:
-                    pyautogui.doubleClick()
-                    trig_double = True
-            
-            else:
-                left_right_click = 0
-                trig_double = False
-        
-        #print(f"Sol Göz: {ratio_left:.2f} -- Sağ Göz: {ratio_right:.2f}")
+            #to Controlling both of eyes
+            if ratio_left<0.25 and ratio_right<0.25:
+                if not eyes_closed:
+                    timer_start = time.time()
+                    eyes_closed = True
+                    double_clicked = False
+
+                elapsed_time = time.time() - timer_start
+
+                if ratio_left < 0.18 and ratio_right < 0.18:
+                    left_right_click +=1
+
+                    if left_right_click == 3:
+                        pyautogui.doubleClick()
+                        double_clicked = True
+
+                if elapsed_time > timer_limit:
+                    break
+
         cv2.circle(image, (nose_x, nose_y), 5, (0,255,0), -1)
+        #print(f"Sol Göz Açıklığı: {ratio_left:.2f} - Sağ Göz Açıklığı: {ratio_right:.2f}")
 
     cv2.imshow("MediaPipe Test", image)
     if cv2.waitKey(5) & 0xFF == ord("q"):
         break
+
+cap.release()
+cv2.destroyAllWindows()
