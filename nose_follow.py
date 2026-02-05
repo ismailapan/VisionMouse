@@ -147,6 +147,11 @@ while cap.isOpened():
 
                 if elapsed_time > timer_limit:
                     break
+            else:
+                eyes_closed = False
+                timer_start = 0
+                double_clicked = False
+                left_right_click = 0
 
         cv2.circle(image, (nose_x, nose_y), 5, (0,255,0), -1)
         #print(f"Sol Göz Açıklığı: {ratio_left:.2f} - Sağ Göz Açıklığı: {ratio_right:.2f}")
