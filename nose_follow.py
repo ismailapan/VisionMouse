@@ -74,8 +74,8 @@ while cap.isOpened():
 
             #MESAFE ÖLÇME
             distance = ((target_x - prev_x)**2 + (target_y - prev_y)**2)**0.5
-            val = 120 / (1 + (distance * 0.5))
-            dynamic_smooth = max(3, min(val, 120))
+            val = 130 / (1 + (distance * 0.1))
+            dynamic_smooth = max(3, min(val, 130))
 
             #Yumuşatma işlemi
             is_Clicking = ratio_left < 0.23 or ratio_right <0.23
@@ -85,7 +85,7 @@ while cap.isOpened():
                 curr_y = prev_y + (target_y - prev_y) / dynamic_smooth
 
                 try:
-                    pyautogui.moveTo(curr_x, curr_y)
+                    pyautogui.moveTo(curr_x,curr_y)
                 except:
                     pass
 
