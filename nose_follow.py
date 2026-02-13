@@ -16,7 +16,7 @@ trig_left = False
 trig_right = False
 trig_double = False
 timer_start = 0
-timer_limit = 10.0
+timer_limit = 5.0
 eyes_closed = False
 
 prev_x, prev_y = 0, 0
@@ -74,29 +74,15 @@ while cap.isOpened():
 
             #MESAFE ÖLÇME
             distance = ((target_x - prev_x)**2 + (target_y - prev_y)**2)**0.5
-            if distance > 100:
-                current_smooth = 3
-            elif distance > 20:
-                current_smooth = 5
-            elif distance > 15:
-                current_smooth = 10
-            elif distance > 5:
-                current_smooth = 15
-            elif distance > 3:
-                current_smooth = 35
-            elif distance > 2:
-                current_smooth = 50
-            elif distance > 1:
-                current_smooth = 65
-            else:
-                current_smooth = 75
+            val = 120 / (1 + (distance * 0.5))
+            dynamic_smooth = max(3, min(val, 120))
 
             #Yumuşatma işlemi
-            is_Clicking = ratio_left < 0.19 or ratio_right <0.18
+            is_Clicking = ratio_left < 0.23 or ratio_right <0.23
 
             if not is_Clicking:
-                curr_x = prev_x + (target_x - prev_x) / current_smooth
-                curr_y = prev_y + (target_y - prev_y) / current_smooth
+                curr_x = prev_x + (target_x - prev_x) / dynamic_smooth
+                curr_y = prev_y + (target_y - prev_y) / dynamic_smooth
 
                 try:
                     pyautogui.moveTo(curr_x, curr_y)
@@ -112,6 +98,7 @@ while cap.isOpened():
                 if left_click == 3 and trig_left is False:
                     pyautogui.leftClick()
                     trig_left = True
+
             elif ratio_left > 0.20:
                 left_click = 0
                 trig_left = False
@@ -145,7 +132,7 @@ while cap.isOpened():
                         pyautogui.doubleClick()
                         double_clicked = True
 
-                if elapsed_time > timer_limit:
+                if elapsed_time >= timer_limit:
                     break
             else:
                 eyes_closed = False
