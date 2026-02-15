@@ -3,8 +3,8 @@ import numpy as np
 import pyautogui
 import cv2
 import time
-from eye_ratio_func import eye_ratio, LEFT_EYE, RIGHT_EYE
-from mouth_ratio_func import mouth_ratio
+from helpersFunction.eye_ratio_func import eye_ratio, LEFT_EYE, RIGHT_EYE
+from helpersFunction.mouth_ratio_func import mouth_ratio
 
 cam_w = 640
 cam_h = 480
@@ -141,7 +141,6 @@ while cap.isOpened():
                 left_right_click = 0
 
         cv2.circle(image, (nose_x, nose_y), 5, (0,255,0), -1)
-        #print(f"Sol Göz Açıklığı: {ratio_left:.2f} - Sağ Göz Açıklığı: {ratio_right:.2f}")
 
     cv2.imshow("MediaPipe Test", image)
     if cv2.waitKey(5) & 0xFF == ord("q"):
