@@ -1,14 +1,5 @@
 # 📄 VisionMouse - Faz 2 Ürün Gereksinim Dokümanı (PRD)
 
-| **Proje Adı** | VisionMouse (Yüz ve Mimik Tabanlı Engelsiz Erişim) |
-| :--- | :--- |
-| **Versiyon** | 2.0 (Release Candidate for Jury) |
-| **Tarih** | 15.02.2026 |
-| **Durum** | Geliştirme (Faz-2 UI/UX Entegrasyonu) |
-| **Hazırlayan** | İsmail Apan & AI Mentor |
-
----
-
 ## 1. Giriş ve Amaç
 Bu fazın temel amacı, çalışan "Çekirdek Algoritmayı" (Core Engine), son kullanıcının (özellikle motor fonksiyon kaybı yaşayan bireylerin) yardım almadan yönetebileceği, hataya toleranslı ve modern bir masaüstü ürününe dönüştürmektir.
 
@@ -75,14 +66,3 @@ Proje, arayüzün donmaması için **Multi-Threading** yapısına geçirilmelidi
 ### 4.1. İş Parçacığı Yapısı
 1.  **Main Thread (UI):** `tkinter.mainloop()` döngüsünü çalıştırır.
 2.  **Worker Thread (Vision Core):** `cv2` ve `mediapipe` işlemlerini yapar. UI thread'i ile değişkenler üzerinden haberleşir.
-
-### 4.2. Dosya Yapısı (Önerilen)
-```text
-VisionMouse/
-├── main.py             # Başlatıcı (Thread yönetimini yapar)
-├── ui_panel.py         # Tkinter Arayüz Sınıfı
-├── vision_core.py      # Görüntü İşleme ve Mouse Kontrol Sınıfı
-├── utils/
-│   ├── one_euro.py     # Filtre Algoritması
-│   └── helpers.py      # Matematiksel Hesaplamalar
-└── assets/             # İkonlar ve Görseller
